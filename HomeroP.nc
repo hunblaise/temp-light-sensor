@@ -69,11 +69,11 @@ implementation
                 busy = TRUE;
             }
 
+            temp = readTemperature;
             if (readTemperature > TEMPERATURE_TRESHOLD)
             {
                 post sendPacket();
             }
-            temp = readTemperature;
         }
     }
     
@@ -89,11 +89,11 @@ implementation
                 busy = TRUE;
             }
 
+            light = readLight;
             if (readLight > LIGHT_TRESHOLD)
             {
                 post sendPacket();
             }
-            light = readLight;
         }
     }
     
@@ -105,13 +105,14 @@ implementation
     event bool DfrfReceive.receive(void* packet)
     {
         HomeroMsg *data = packet;
-        call Leds.led2Toggle();
+        HomeroMsg *btrpkt = (HomeroMsg*) call SerialSend.getPayload(&pkt, sizeof(HomeroMsg));
             
         if (call SerialSend.send(AM_BROADCAST_ADDR, &pkt, sizeof(HomeroMsg)) == SUCCESS)
         {
             busy = TRUE;
         }
 
+        call Leds.led2Toggle();
         return TRUE;
     }
         
